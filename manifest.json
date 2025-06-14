@@ -1,0 +1,16 @@
+{
+  "name": "KalaniMusicProd",
+  "short_name": "KalaniMusic",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FFD700",
+  "description": "Beats from the block. Vibes for the world.",
+  "icons": [
+    {
+      "src": "https://i.imghippo.com/files/rhuC9297Wk.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
