@@ -11,10 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
 
   <style>
-    /* 🔴 THIS FIXES THE ALIGNMENT ISSUES */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -61,10 +58,27 @@
     
     button:hover { transform: scale(1.05); }
 
+    /* Video Container Style */
+    .video-container {
+      margin-top: 30px;
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 2px solid #333;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     #status { margin-top: 20px; font-size: 0.9rem; color: #fff; }
     #player { width: 100%; margin-top: 15px; }
 
-    /* 🔴 UPDATED FOOTER CSS */
     footer { 
       width: 100%;
       text-align: center; 
@@ -104,6 +118,18 @@
         <button class="btn-master" onclick="processAudio('full')">⬇ MASTER FULL SONG</button>
     </div>
 
+    <div style="margin-top: 30px; text-align: left;">
+        <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 10px; text-align: center;">Latest Release:</p>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/QY_eGoiA8bg?autoplay=1&mute=1" 
+                title="Kalani Music Prod - Despues de la lipo" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
     <p id="status"></p>
 
     <div id="resultArea" style="display:none; margin-top:20px;">
@@ -124,7 +150,6 @@
         
         if(!target) { alert("Please upload a song first."); return; }
 
-        // Update status text based on mode
         if (mode === 'preview') {
             status.innerText = "⏳ Generating Preview... (Fast)";
         } else {
@@ -134,7 +159,7 @@
         const formData = new FormData();
         formData.append("target", target);
         formData.append("preset", preset);
-        formData.append("mode", mode); // Tells server if it's Preview or Full
+        formData.append("mode", mode); 
 
         const renderUrl = "https://ai-mastering-kmp.onrender.com/master"; 
 
@@ -148,12 +173,10 @@
             
             document.getElementById('resultArea').style.display = 'block';
             
-            // Set up Player
             const player = document.getElementById('player');
             player.src = downloadUrl;
-            player.play(); // Auto-play the result
+            player.play(); 
 
-            // Set up Download Link
             const dlLink = document.getElementById('dlLink');
             dlLink.href = downloadUrl;
             
