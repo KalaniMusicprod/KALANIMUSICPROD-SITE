@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
   <title>Free AI Audio Mastering - KalaniMusicProd</title>
-  <meta name="description" content="Master your music for free with KalaniMusicProd's AI Engine. Upload your mix and a reference track to get a professional sound instantly." />
-  <meta name="keywords" content="AI mastering, free audio mastering, online mastering, music production, KalaniMusicProd, automated mastering, reference mastering" />
+  <meta name="description" content="Master your music for free with KalaniMusicProd's AI Engine. Upload your mix to get a professional sound instantly." />
+  <meta name="keywords" content="AI mastering, free audio mastering, online mastering, music production, KalaniMusicProd, automated mastering" />
   <link rel="canonical" href="https://kalanimusicprod.com/ai-mastering.html" />
 
   <meta property="og:title" content="Free AI Mastering - KalaniMusicProd" />
-  <meta property="og:description" content="Upload your mix + a reference track. Get a pro master instantly for free." />
+  <meta property="og:description" content="Upload your mix. Get a pro master instantly for free." />
   <meta property="og:image" content="https://ik.imagekit.io/sstqkuztg/20250517_1027_Futuristic%20Music%20Logo_simple_compose_01jvfa4zwbfvh8pm63hygay29q.png?updatedAt=1747505450562" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kalanimusicprod.com/ai-mastering.html" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Free AI Mastering - KalaniMusicProd" />
-  <meta name="twitter:description" content="Upload your mix + a reference track. Get a pro master instantly for free." />
+  <meta name="twitter:description" content="Upload your mix. Get a pro master instantly for free." />
   <meta name="twitter:image" content="https://ik.imagekit.io/sstqkuztg/20250517_1027_Futuristic%20Music%20Logo_simple_compose_01jvfa4zwbfvh8pm63hygay29q.png?updatedAt=1747505450562" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8074004192746882"
@@ -88,7 +88,7 @@
 
   <header>
     <h1>AI Mastering Engine</h1>
-    <p>Upload your mix. Upload a reference. Get a pro master.</p>
+    <p>Upload your mix. Get a pro master instantly.</p>
   </header>
 
   <nav>
@@ -100,10 +100,6 @@
   <div class="master-zone">
     <h3>1. Upload Your Mix (WAV/MP3)</h3>
     <input type="file" id="targetFile">
-
-    <h3>2. Upload Reference Track (The Vibe)</h3>
-    <p style="font-size:0.8rem; color:#ccc;">(e.g. A Drake song you want it to sound like)</p>
-    <input type="file" id="refFile">
 
     <button onclick="startMastering()">MASTER MY TRACK</button>
 
@@ -122,26 +118,26 @@
   <script>
     async function startMastering() {
         const target = document.getElementById('targetFile').files[0];
-        const reference = document.getElementById('refFile').files[0];
         const status = document.getElementById('status');
         
-        if(!target || !reference) { 
-            alert("Please upload BOTH your song and a reference track."); 
+        // Simpler Check: Only checks for 1 file now
+        if(!target) { 
+            alert("Please upload your song first."); 
             return; 
         }
 
-        status.innerText = "⏳ Uploading & Processing... (This can take 1-2 mins)";
+        status.innerText = "⏳ Uploading & Processing... (This takes about 30-60 seconds)";
         
         const formData = new FormData();
         formData.append("target", target);
-        formData.append("reference", reference);
-
+        
+        // This URL is perfect
         const renderUrl = "https://ai-mastering-kmp.onrender.com/master"; 
 
         try {
             const response = await fetch(renderUrl, { method: "POST", body: formData });
             
-            if (!response.ok) throw new Error("Processing failed.");
+            if (!response.ok) throw new Error("Processing failed (Server might be waking up, try again!)");
             
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
