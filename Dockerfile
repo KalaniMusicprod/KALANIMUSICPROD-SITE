@@ -17,5 +17,5 @@ COPY . .
 # Open the port for the web
 EXPOSE 10000
 
-# Start the server
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
+# Start the server with a 2-MINUTE TIMEOUT (Fixes the crash)
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "--timeout", "120", "app:app"]
