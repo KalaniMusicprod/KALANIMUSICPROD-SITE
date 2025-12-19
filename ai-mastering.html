@@ -3,25 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
   <title>Free AI Audio Mastering - KalaniMusicProd</title>
-  <meta name="description" content="Master your music for free with KalaniMusicProd's AI Engine. Upload your mix to get a professional sound instantly." />
-  <meta name="keywords" content="AI mastering, free audio mastering, online mastering, music production, KalaniMusicProd, automated mastering" />
-  <link rel="canonical" href="https://kalanimusicprod.com/ai-mastering.html" />
-
-  <meta property="og:title" content="Free AI Mastering - KalaniMusicProd" />
-  <meta property="og:description" content="Upload your mix. Get a pro master instantly for free." />
-  <meta property="og:image" content="https://ik.imagekit.io/sstqkuztg/20250517_1027_Futuristic%20Music%20Logo_simple_compose_01jvfa4zwbfvh8pm63hygay29q.png?updatedAt=1747505450562" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://kalanimusicprod.com/ai-mastering.html" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Free AI Mastering - KalaniMusicProd" />
-  <meta name="twitter:description" content="Upload your mix. Get a pro master instantly for free." />
-  <meta name="twitter:image" content="https://ik.imagekit.io/sstqkuztg/20250517_1027_Futuristic%20Music%20Logo_simple_compose_01jvfa4zwbfvh8pm63hygay29q.png?updatedAt=1747505450562" />
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8074004192746882"
-     crossorigin="anonymous"></script>
+  
+  <meta name="description" content="Master your music for free with KalaniMusicProd's AI Engine." />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8074004192746882" crossorigin="anonymous"></script>
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
 
@@ -35,15 +20,9 @@
     }
     header { text-align: center; padding: 40px 20px; }
     
-    /* Navigation Style */
-    nav {
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 30px;
-    }
-    nav a {
-      background-color: #FFD700; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none;
-    }
+    nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
+    nav a { background-color: #FFD700; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; }
 
-    /* Mastering Box */
     .master-zone {
       max-width: 600px;
       margin: 20px auto;
@@ -54,7 +33,7 @@
       text-align: center;
     }
     
-    input[type=file] {
+    input[type=file], select {
       display: block;
       margin: 15px auto;
       padding: 10px;
@@ -63,32 +42,29 @@
       border: 1px solid #555;
       border-radius: 5px;
       width: 80%;
+      font-size: 1rem;
     }
 
+    /* Button Container */
+    .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+
     button {
-      background-color: #FFD700;
-      color: #000;
-      border: none;
-      padding: 15px 40px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      margin-top: 20px;
-      transition: transform 0.2s;
+      padding: 15px 30px; font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 8px; border: none; transition: transform 0.2s;
     }
+    .btn-preview { background-color: #333; color: #fff; border: 1px solid #FFD700; }
+    .btn-master { background-color: #FFD700; color: #000; }
+    
     button:hover { transform: scale(1.05); }
 
     #status { margin-top: 20px; font-size: 0.9rem; color: #fff; }
-    
-    footer { text-align: center; padding: 20px; margin-top: 40px; font-size: 0.9rem; }
+    #player { width: 100%; margin-top: 15px; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>AI Mastering Engine</h1>
-    <p>Upload your mix. Get a pro master instantly.</p>
+    <p>Select a style. Preview instantly. Download for free.</p>
   </header>
 
   <nav>
@@ -98,54 +74,81 @@
   </nav>
 
   <div class="master-zone">
-    <h3>1. Upload Your Mix (WAV/MP3)</h3>
+    <h3>1. Upload Your Mix</h3>
     <input type="file" id="targetFile">
 
-    <button onclick="startMastering()">MASTER MY TRACK</button>
+    <h3>2. Select Mastering Style</h3>
+    <select id="preset">
+        <option value="modern">🔥 Modern & Crispy (Ozone Style)</option>
+        <option value="bass">🔊 Trap / Heavy Bass</option>
+        <option value="warm">☕ Warm & Vintage</option>
+    </select>
+
+    <div class="btn-group">
+        <button class="btn-preview" onclick="processAudio('preview')">▶ PREVIEW (30s)</button>
+        <button class="btn-master" onclick="processAudio('full')">⬇ MASTER FULL SONG</button>
+    </div>
 
     <p id="status"></p>
 
-    <div id="downloadArea" style="display:none; margin-top:20px;">
-        <p>✅ Mastering Complete!</p>
-        <a id="dlLink" href="#" style="color:#FFD700; text-decoration:underline; font-size:1.2rem;">Download Mastered Song</a>
+    <div id="resultArea" style="display:none; margin-top:20px;">
+        <p id="resultTitle" style="font-weight:bold;">Master Ready!</p>
+        <audio id="player" controls></audio>
+        <br><br>
+        <a id="dlLink" href="#" style="color:#FFD700; text-decoration:underline; font-size:1.2rem;">Download File</a>
     </div>
   </div>
 
-  <footer>
-    &copy; 2025 KalaniMusicProd.
-  </footer>
+  <footer>&copy; 2025 KalaniMusicProd.</footer>
 
   <script>
-    async function startMastering() {
+    async function processAudio(mode) {
         const target = document.getElementById('targetFile').files[0];
+        const preset = document.getElementById('preset').value;
         const status = document.getElementById('status');
         
-        // Simpler Check: Only checks for 1 file now
-        if(!target) { 
-            alert("Please upload your song first."); 
-            return; 
-        }
+        if(!target) { alert("Please upload a song first."); return; }
 
-        status.innerText = "⏳ Uploading & Processing... (This takes about 30-60 seconds)";
+        // Update status text based on mode
+        if (mode === 'preview') {
+            status.innerText = "⏳ Generating Preview... (Fast)";
+        } else {
+            status.innerText = "⏳ Mastering Full Song... (This takes 1-2 mins)";
+        }
         
         const formData = new FormData();
         formData.append("target", target);
-        
-        // This URL is perfect
+        formData.append("preset", preset);
+        formData.append("mode", mode); // Tells server if it's Preview or Full
+
         const renderUrl = "https://ai-mastering-kmp.onrender.com/master"; 
 
         try {
             const response = await fetch(renderUrl, { method: "POST", body: formData });
             
-            if (!response.ok) throw new Error("Processing failed (Server might be waking up, try again!)");
+            if (!response.ok) throw new Error("Processing failed.");
             
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
             
-            document.getElementById('downloadArea').style.display = 'block';
+            document.getElementById('resultArea').style.display = 'block';
+            
+            // Set up Player
+            const player = document.getElementById('player');
+            player.src = downloadUrl;
+            player.play(); // Auto-play the result
+
+            // Set up Download Link
             const dlLink = document.getElementById('dlLink');
             dlLink.href = downloadUrl;
-            dlLink.download = "Mastered_" + target.name;
+            
+            if (mode === 'preview') {
+                document.getElementById('resultTitle').innerText = "🎧 Preview Ready (30s)";
+                dlLink.download = "Preview_" + target.name;
+            } else {
+                document.getElementById('resultTitle').innerText = "✅ Full Master Complete!";
+                dlLink.download = "Mastered_" + target.name;
+            }
             
             status.innerText = "";
             
