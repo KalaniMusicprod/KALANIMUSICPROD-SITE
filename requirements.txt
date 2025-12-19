@@ -1,0 +1,7 @@
+flask
+flask-cors
+matchering
+gunicorn
+scipy
+numpy
+soundfile
