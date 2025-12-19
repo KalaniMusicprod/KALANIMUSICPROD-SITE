@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Mastering - KalaniMusicProd</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  
+  <style>
+    body {
+      margin: 0;
+      /* Same background as your main site */
+      background: url('https://ik.imagekit.io/sstqkuztg/20250515_1717_Futuristic%20Moon%20Music%20Studio_remix_01jvawv4mvfvr9h0ynvzr6jf42.png?updatedAt=1747505837371') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Poppins', sans-serif;
+      color: #FFD700;
+    }
+    header { text-align: center; padding: 40px 20px; }
+    
+    /* Navigation Style (Matches your Index) */
+    nav {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 30px;
+    }
+    nav a {
+      background-color: #FFD700; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none;
+    }
+
+    /* Mastering Box */
+    .master-zone {
+      max-width: 600px;
+      margin: 20px auto;
+      background: rgba(26, 26, 26, 0.95);
+      border: 2px solid #FFD700;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    input[type=file] {
+      display: block;
+      margin: 15px auto;
+      padding: 10px;
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+      width: 80%;
+    }
+
+    button {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-top: 20px;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+
+    #status { margin-top: 20px; font-size: 0.9rem; color: #fff; }
+    
+    footer { text-align: center; padding: 20px; margin-top: 40px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>AI Mastering Engine</h1>
+    <p>Upload your mix. Upload a reference. Get a pro master.</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="beatstore.html">Beatstore</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="master-zone">
+    <h3>1. Upload Your Mix (WAV/MP3)</h3>
+    <input type="file" id="targetFile">
+
+    <h3>2. Upload Reference Track (The Vibe)</h3>
+    <p style="font-size:0.8rem; color:#ccc;">(e.g. A Drake song you want it to sound like)</p>
+    <input type="file" id="refFile">
+
+    <button onclick="startMastering()">MASTER MY TRACK</button>
+
+    <p id="status"></p>
+
+    <div id="downloadArea" style="display:none; margin-top:20px;">
+        <p>✅ Mastering Complete!</p>
+        <a id="dlLink" href="#" style="color:#FFD700; text-decoration:underline; font-size:1.2rem;">Download Mastered Song</a>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 KalaniMusicProd.
+  </footer>
+
+  <script>
+    async function startMastering() {
+        const target = document.getElementById('targetFile').files[0];
+        const reference = document.getElementById('refFile').files[0];
+        const status = document.getElementById('status');
+        
+        if(!target || !reference) { 
+            alert("Please upload BOTH your song and a reference track."); 
+            return; 
+        }
+
+        status.innerText = "⏳ Uploading & Processing... (This can take 1-2 mins)";
+        
+        const formData = new FormData();
+        formData.append("target", target);
+        formData.append("reference", reference);
+
+        // 🔴 IMPORTANT: PASTE YOUR RENDER URL BELOW
+        const renderUrl = "https://YOUR-APP-NAME.onrender.com/master"; 
+
+        try {
+            const response = await fetch(renderUrl, { method: "POST", body: formData });
+            
+            if (!response.ok) throw new Error("Processing failed.");
+            
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            
+            document.getElementById('downloadArea').style.display = 'block';
+            const dlLink = document.getElementById('dlLink');
+            dlLink.href = downloadUrl;
+            dlLink.download = "Mastered_" + target.name;
+            
+            status.innerText = "";
+            
+        } catch (error) {
+            status.innerText = "❌ Error: " + error.message;
+        }
+    }
+  </script>
+
+</body>
+</html>
