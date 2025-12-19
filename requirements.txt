@@ -1,7 +1,4 @@
 flask
 flask-cors
-matchering
+pydub
 gunicorn
-scipy
-numpy
-soundfile
