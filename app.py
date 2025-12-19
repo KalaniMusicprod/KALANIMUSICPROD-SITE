@@ -1,14 +1,14 @@
 import os
+import subprocess
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from pydub import AudioSegment, effects
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Fast Mastering Engine is Ready!"
+    return "Pro AI Mastering Engine (Crispy & Loud) is Ready!"
 
 @app.route('/master', methods=['POST'])
 def master_audio():
@@ -19,24 +19,31 @@ def master_audio():
     target_file = request.files['target']
     
     # 2. Save file temporarily
-    input_path = "temp_input.mp3"
-    output_path = "mastered_output.mp3"
+    input_path = "input_song.mp3"
+    output_path = "mastered_song.mp3"
     target_file.save(input_path)
 
     try:
-        # --- FAST MASTERING (No Timeout) ---
-        # 1. Load the song
-        sound = AudioSegment.from_file(input_path)
+        # --- THE "CRISPY & LOUD" CHAIN ---
+        # 1. highpass=f=30: Removes deep mud (Clarity)
+        # 2. highshelf=f=10000:g=4: Boosts highs by 4dB (The "Fresh Air" Crispiness)
+        # 3. loudnorm=I=-12:TP=-1: Smart Limiter targeting -12 LUFS volume
         
-        # 2. Normalize (The "Loudness")
-        # This scans the whole song and boosts it to the max volume (-0.5dB)
-        # It is very fast compared to compression.
-        mastered = effects.normalize(sound, headroom=0.5)
+        filter_chain = "highpass=f=30,highshelf=f=10000:g=4,loudnorm=I=-12:TP=-1"
 
-        # 3. Export as High-Quality MP3 (320kbps)
-        mastered.export(output_path, format="mp3", bitrate="320k")
+        command = [
+            "ffmpeg", 
+            "-y",  # Overwrite output
+            "-i", input_path,
+            "-af", filter_chain, 
+            "-b:a", "320k", # High Quality 320kbps
+            output_path
+        ]
+        
+        # Run the command
+        subprocess.run(command, check=True)
 
-        # 4. Send back to user
+        # 3. Send back to user
         return send_file(output_path, as_attachment=True)
 
     except Exception as e:
