@@ -8,7 +8,7 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Kalani AI Mastering (Presets + Preview) is Ready!"
+    return "Urban AI Mastering Engine (Trap/Drill/Afro) is Ready!"
 
 @app.route('/master', methods=['POST'])
 def master_audio():
@@ -16,47 +16,59 @@ def master_audio():
         return jsonify({"error": "No file uploaded"}), 400
     
     target_file = request.files['target']
-    preset = request.form.get('preset', 'modern') # Default to Modern
-    mode = request.form.get('mode', 'full')       # Default to Full Song
+    preset = request.form.get('preset', 'fresh') 
+    mode = request.form.get('mode', 'full')       
     
     input_path = "input_song.mp3"
     output_path = "mastered_song.mp3"
     target_file.save(input_path)
 
     try:
-        # --- 1. DEFINE PRESETS (Ozone Styles) ---
-        # Modern: Crisp highs, cut mud, loud (The "Fresh Air" vibe)
-        chain_modern = "highpass=f=30,highshelf=f=10000:g=4,loudnorm=I=-12:TP=-1"
-        
-        # Warm: Boosts low-mids (250Hz), smooth highs, vintage vibe
-        chain_warm = "highpass=f=30,lowshelf=f=250:g=2,highshelf=f=8000:g=-2,loudnorm=I=-13:TP=-1"
-        
-        # Bass/Trap: Boosts sub (60Hz), crispy highs (8kHz), hard limiter
-        chain_bass = "highpass=f=20,lowshelf=f=60:g=4,highshelf=f=8000:g=3,loudnorm=I=-11:TP=-1"
+        # --- SCIENTIFIC URBAN MASTERING CHAINS ---
 
-        # Select the active chain
-        if preset == 'warm':
-            active_filter = chain_warm
-        elif preset == 'bass':
-            active_filter = chain_bass
+        # 1. TRAP & DRILL (Heavy 808s, Sharp Highs)
+        # - Highpass 20Hz: Cleans ultra-low rumble
+        # - Lowshelf 60Hz (+4dB): Boosts the 808 sub-bass specifically
+        # - Cut 300Hz (-2dB): Removes "boxiness" to clean up mud
+        # - Highshelf 8kHz (+3dB): Makes hi-hats sharp
+        # - Loudnorm -9 LUFS: Competitive volume for Trap
+        chain_trap = "highpass=f=20,lowshelf=f=60:g=4,equalizer=f=300:t=q:w=1:g=-2,highshelf=f=8000:g=3,loudnorm=I=-9:TP=-0.5"
+        
+        # 2. REGGAETON & AFROBEAT (Punchy Kick, Clear Vocals)
+        # - Highpass 30Hz: Tightens the kick drum
+        # - Lowshelf 100Hz (+2dB): Adds weight to the Reggaeton Kick
+        # - Boost 2kHz (+2dB): "Vocal Presence" boost so voice cuts through beat
+        # - Highshelf 12kHz (+2dB): Smooth Air (not harsh)
+        # - Loudnorm -10 LUFS: Loud but keeps the bounce/dynamics
+        chain_afro = "highpass=f=30,lowshelf=f=100:g=2,equalizer=f=2000:t=q:w=1:g=2,highshelf=f=12000:g=2,loudnorm=I=-10:TP=-1"
+
+        # 3. FRESH & CRISPY (The "Fresh Air" VST Sound)
+        # - Highpass 40Hz: Very clean low end
+        # - Highshelf 10kHz (+5dB): The "Fresh Air" effect (Massive clarity)
+        # - Highshelf 16kHz (+3dB): Extra "Sparkle"
+        # - Loudnorm -11 LUFS: Balanced commercial loudness
+        chain_fresh = "highpass=f=40,highshelf=f=10000:g=5,highshelf=f=16000:g=3,loudnorm=I=-11:TP=-1"
+
+        # Select Chain
+        if preset == 'trap':
+            active_filter = chain_trap
+        elif preset == 'afro':
+            active_filter = chain_afro
         else:
-            active_filter = chain_modern
+            active_filter = chain_fresh
 
-        # --- 2. BUILD FFMPEG COMMAND ---
+        # Build Command
         command = ["ffmpeg", "-y", "-i", input_path]
 
-        # Check for Preview Mode (Only process first 30 seconds)
         if mode == 'preview':
             command.extend(["-t", "30"]) 
 
-        # Add filters and quality settings
         command.extend([
             "-af", active_filter,
             "-b:a", "320k",
             output_path
         ])
         
-        # Run FFmpeg
         subprocess.run(command, check=True)
 
         return send_file(output_path, as_attachment=True)
